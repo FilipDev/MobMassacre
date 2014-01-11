@@ -23,7 +23,7 @@ public class PlayerStats extends NewYAML{
 			playerstats.set("Kills." + player.getName() + ".kills", playerstats.getInt("Kills." + player.getName() + ".kills") + gbvs.rewards.get(killedEntity.getType().name()));
 		}catch (Exception e){
 			playerstats.set("Kills." + player.getName() + ".kills", 1);
-			System.out.println("An error occured getting the reward value for mob, defaulting to 1");
+			System.out.println("An error occurred getting the reward value for mob, defaulting to 1");
 		}
 		try{
 			playerstats.save(getFile());
