@@ -6,6 +6,7 @@ public class Rewarder {
 
 	Start start = new Start();
 	GlobalVars gbvs = new GlobalVars();
+	Stats stats = new Stats();
 
 	public void rewardAll(){
 		for (String s : gbvs.rewards.keySet()){
@@ -14,5 +15,9 @@ public class Rewarder {
 			Reward = Reward.replaceAll("@r", ((Integer) (reward)).toString()).replaceAll("@p", s);
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Reward);
 		}
+		gbvs.validMobs.clear();
+		gbvs.rewards.clear();
+		gbvs.reward.clear();
+		start.statis.set("Kills", "");
 	}
 }

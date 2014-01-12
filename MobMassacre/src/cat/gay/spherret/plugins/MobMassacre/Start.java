@@ -1,6 +1,7 @@
 package cat.gay.spherret.plugins.MobMassacre;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -41,6 +42,7 @@ public class Start extends JavaPlugin {
 			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new TimeChecker(), 0, 100);
 		}
 	}
+
 	public void onDisable(){
 		this.saveStats();
 	}
@@ -50,7 +52,17 @@ public class Start extends JavaPlugin {
 		if (!(sender instanceof Player)){
 			Player p = ((Player) sender);
 			if (command.getName().equals("score")){
-				p.sendMessage("");
+				if (args.length < 1)
+					p.sendMessage(stats.getKills(p) + "");
+				if (args.length == 1 && p.hasPermission("mobmassacre.seeothers"))
+					try{
+						p.sendMessage(stats.getKills(Bukkit.getPlayer(args[0])) + "");
+					}catch (Exception e){
+						p.sendMessage(ChatColor.RED + "Second parameter must be a player.");
+					}
+			}
+			if (command.getName().equals("top")){
+
 			}
 		}
 
