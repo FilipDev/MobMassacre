@@ -1,0 +1,4 @@
+#@p and @r are variables.
+#@p = The Player
+#@r = The Reward Amount
+Reward: '/eco give @p @r'

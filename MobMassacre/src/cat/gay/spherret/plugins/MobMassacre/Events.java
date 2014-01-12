@@ -12,7 +12,7 @@ public class Events implements Listener{
 
 	GlobalVars gbvs = new GlobalVars();
 	Start start = new Start();
-	PlayerStats playerStats = new PlayerStats(new File(start.dir + File.pathSeparator + "players.yml"));
+	Stats stats = new Stats();
 
 	@EventHandler
 	public void onPlayerKillMob(EntityDeathEvent e){
@@ -23,6 +23,6 @@ public class Events implements Listener{
 		}catch (Exception er){
 			return;
 		}
-		playerStats.changeKill(p, entity);
+		stats.changeKill(p, entity);
 	}
 }
