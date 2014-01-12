@@ -23,6 +23,7 @@ public class Events implements Listener{
 		}catch (Exception er){
 			return;
 		}
-		stats.changeKill(p, entity);
+		if (gbvs.validMobs.contains(entity))
+			stats.changeKill(p, entity);
 	}
 }

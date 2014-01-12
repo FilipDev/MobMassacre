@@ -1,5 +1,6 @@
 package cat.gay.spherret.plugins.MobMassacre;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -8,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Time;
 import java.util.List;
 
 public class Start extends JavaPlugin {
@@ -31,9 +33,16 @@ public class Start extends JavaPlugin {
 			gbvs.reward.put(mob, statis.getInt("Rewards" + mob));
 		}
 		this.saveDefaultConfig();
+		TimeChecker timeChecker = new TimeChecker();
+		timeChecker.trySync();
+		try{
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new TimeChecker(), 0, 100);
+		}catch (NullPointerException e){
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new TimeChecker(), 0, 100);
+		}
 	}
 	public void onDisable(){
-
+		this.saveStats();
 	}
 
 	@Override
