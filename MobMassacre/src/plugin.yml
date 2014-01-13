@@ -3,3 +3,7 @@ name: MobMassacre
 version: 1.0
 author: Spherret.
 description: MobMassacre.
+commands:
+  score:
+permissions:
+  mobmassacre.see.others:

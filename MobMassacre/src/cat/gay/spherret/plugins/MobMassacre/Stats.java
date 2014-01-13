@@ -9,29 +9,27 @@ public class Stats{
 
 	Start s = new Start();
 
-	GlobalVars gbvs = new GlobalVars();
-
 	public void changeKill(Player player, Entity killedEntity){
-		if (gbvs.validMobs.contains(killedEntity.getType().getName())){
-			s.statis.set("Kills." + player.getName() + ".kills", 1);
+		if (GlobalVars.validMobs.contains(killedEntity.getType().getName())){
 			try{
-				s.statis.save(s.newYAML.getFile());
-			}catch (IOException e){
-				System.out.println("Failed to save score.");
+				GlobalVars.statis.set("Kills." + player.getName() + ".kills", 1 + GlobalVars.statis.getInt("Kills.\" + player.getName() + \".kills"));
+			}catch (Exception e){
+				GlobalVars.statis.set("Kills." + player.getName() + ".kills", 1);
 			}
+			s.saveStats();
 		}
 	}
 
 	public int getKills(Player p){
 		try{
-			return s.statis.getInt("Kills." + p.getName() + ".kills");
+			return GlobalVars.statis.getInt("Kills." + p.getName() + ".kills");
 		}catch (Exception e){
 			return 0;
 		}
 	}
 	public int getKills(String p){
 		try{
-			return s.statis.getInt("Kills." + p + ".kills");
+			return GlobalVars.statis.getInt("Kills." + p + ".kills");
 		}catch (Exception e){
 			return 0;
 		}

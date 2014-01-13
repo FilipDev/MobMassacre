@@ -1,46 +1,45 @@
 package cat.gay.spherret.plugins.MobMassacre;
 
+import cat.gay.spherret.plugins.MobMassacre.TimeChecker.TimeChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class Start extends JavaPlugin {
 
-	GlobalVars gbvs = new GlobalVars();
+	public GlobalVars gbvs = new GlobalVars();
 
-	Stats stats;
+	public Stats stats;
 
-	NewYAML newYAML;
-	YamlConfiguration statis;
+	public static NewYAML newYAML;
 
-	String dir;
 
 	public void onEnable(){
-		dir = this.getDataFolder().getPath();
-		newYAML = new NewYAML(new File(dir + "data.yml"));
-		statis = newYAML.newYaml();
+		newYAML = new NewYAML(new File(this.getDataFolder().getPath() + File.separator + "data.yml"));
+		System.out.println(newYAML.getFile());
+		GlobalVars.statis = newYAML.newYaml();
 		this.getServer().getPluginManager().registerEvents(new Events(), this);
-		List<String> rewards = statis.getStringList("Rewards");
-		for (String mob : rewards){
-			gbvs.reward.put(mob, statis.getInt("Rewards" + mob));
+		Set<String> rewards = GlobalVars.statis.createSection("Kills").getKeys(false);
+		for (String player : rewards){
+			gbvs.rewards.put(player, GlobalVars.statis.getInt("Kills." + player));
 		}
 		this.saveDefaultConfig();
-		TimeChecker timeChecker = new TimeChecker();
+		TimeChecker timeChecker = new TimeChecker(this);
 		timeChecker.trySync();
-		try{
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new TimeChecker(), 0, 100);
-		}catch (NullPointerException e){
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new TimeChecker(), 0, 100);
-		}
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, timeChecker, 0, 3600);
+		String[] validMobs = {"Chicken", "Zombie"};
+		GlobalVars.validMobs = Arrays.asList(validMobs);
 	}
 
 	public void onDisable(){
@@ -70,8 +69,9 @@ public class Start extends JavaPlugin {
 	}
 
 	public void saveStats(){
+		System.out.println(newYAML.getFile());
 		try{
-			statis.save(newYAML.getFile());
+			gbvs.statis.save(newYAML.getFile());
 		}catch (IOException e){
 			e.printStackTrace();
 		}
