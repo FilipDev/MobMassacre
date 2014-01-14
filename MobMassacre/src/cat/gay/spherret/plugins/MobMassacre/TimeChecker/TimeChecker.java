@@ -40,6 +40,7 @@ public class TimeChecker implements Runnable {
 
 	public TimeChecker(Start start){
 		this.start = start;
+		rewarder.setStart(start);
 	}
 
 	@Override

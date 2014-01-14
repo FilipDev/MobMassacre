@@ -19,14 +19,17 @@ public class Start extends JavaPlugin {
 	TimeChecker timeChecker;
 
 	public void onEnable(){
+		this.saveDefaultConfig();
 		newYAML = new NewYAML(new File(this.getDataFolder().getPath() + File.separator + "data.yml"));
 		GlobalVars.statis = newYAML.newYaml();
 		this.getServer().getPluginManager().registerEvents(new Events(), this);
-		Set<String> rewards = GlobalVars.statis.getConfigurationSection("Kills.").getKeys(false);
-		for (String player : rewards){
-			GlobalVars.rewards.put(player, GlobalVars.statis.getInt("Kills." + player + ".kills"));
-		}
-		this.saveDefaultConfig();
+		try{
+			Set<String> rewards = GlobalVars.statis.getConfigurationSection("Kills.").getKeys(false);
+
+			for (String player : rewards){
+				GlobalVars.rewards.put(player, GlobalVars.statis.getInt("Kills." + player + ".kills"));
+			}
+		}catch (Exception e){}
 		timeChecker = new TimeChecker(this);
 		timeChecker.trySync();
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, timeChecker, 0, 3600);
@@ -39,13 +42,17 @@ public class Start extends JavaPlugin {
 		this.saveStats();
 	}
 
+	public String getReward(){
+		return getConfig().getString("reward");
+	}
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if ((sender instanceof Player)){
 			Player p = ((Player) sender);
 			if (command.getName().equalsIgnoreCase("score")){
 				if (args.length < 1){
-					p.sendMessage("" + Stats.getKills(p.getName()));
+					p.sendMessage(ChatColor.GOLD + "You have killed " + ChatColor.RED + Stats.getKills(p.getName()) + " valid mobs.");
 				}
 				if (args.length == 1 && p.hasPermission("mobmassacre.seeothers"))
 					try{
@@ -113,9 +120,9 @@ public class Start extends JavaPlugin {
 		Object[] kills1 = kills.toArray();
 		p.sendMessage(ChatColor.DARK_GRAY + "---TOP 3 SCORES---");
 		try{
-			p.sendMessage(ChatColor.RED + "1. " + ChatColor.GRAY + names[0] + " - " + ChatColor.GOLD + kills1[0]);
-			p.sendMessage(ChatColor.RED + "2. " + ChatColor.GRAY + names[1] + " - " + ChatColor.GOLD + kills1[1]);
-			p.sendMessage(ChatColor.RED + "3. " + ChatColor.GRAY + names[2] + " - " + ChatColor.GOLD + kills1[2]);
+			p.sendMessage(ChatColor.RED + "1. " + ChatColor.GOLD + names[0] + " - " + ChatColor.RED + kills1[0]);
+			p.sendMessage(ChatColor.RED + "2. " + ChatColor.GOLD + names[1] + " - " + ChatColor.RED + kills1[1]);
+			p.sendMessage(ChatColor.RED + "3. " + ChatColor.GOLD + names[2] + " - " + ChatColor.RED + kills1[2]);
 		}catch (ArrayIndexOutOfBoundsException e){}
 	}
 	class ValueComparator implements Comparator<String> {
@@ -132,5 +139,7 @@ public class Start extends JavaPlugin {
 			}else{
 				return 1;
 			}// returning 0 would merge keys
-		}}
+		}
+	}
+	public Start(){}
 }

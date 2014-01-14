@@ -11,3 +11,5 @@ reward: 'say @p got @r'
 message: 'You recieved @r! @if_on_charts(You recieved an extra @rpl for your #@pl place on the top 3 list!)'
 #Reward per mob.
 rate: 0.10
+#Valid Mobs (Mobs that count for your reward when killed)
+mobs: {Zombie, Skeleton}
