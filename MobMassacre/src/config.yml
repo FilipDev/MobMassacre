@@ -3,13 +3,19 @@
 #@r = The Reward Amount.
 reward: 'say @p got @r'
 #Message to tell player when they recieve their reward.
-#@p = The Player.
-#@r = The Reward Amount.
-#@if_on_charts()
+#@mk = Mob Kills.
+message: 'You won @r for killing @mk valid mobs!'
+#If the player is on the top 3 list
 #@pl = Place On Chart.
-#@rpl = Reward For That Place.
-message: 'You recieved @r! @if_on_charts(You recieved an extra @rpl for your #@pl place on the top 3 list!)'
+chartmessage: 'You won @r and an additional @rpl for being number @pl on the top 3 players!'
 #Reward per mob.
 rate: 0.10
 #Valid Mobs (Mobs that count for your reward when killed)
-mobs: {Zombie, Skeleton}
+mobs:
+  - Zombie
+  - Chicken
+  - Creeper
+placerewards:
+  1: 80
+  2: 50
+  3: 20

@@ -33,8 +33,8 @@ public class Start extends JavaPlugin {
 		timeChecker = new TimeChecker(this);
 		timeChecker.trySync();
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, timeChecker, 0, 3600);
-		String[] validMobs = {"Chicken", "Zombie"};
-		GlobalVars.validMobs = Arrays.asList(validMobs);
+		List<String> validMobs = getConfig().getStringList("mobs");
+		GlobalVars.validMobs = validMobs;
 		arrangeArray();
 	}
 
