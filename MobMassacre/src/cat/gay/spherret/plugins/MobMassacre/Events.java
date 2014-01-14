@@ -26,8 +26,6 @@ public class Events implements Listener{
 		}catch (Exception er){
 			return;
 		}
-		for (String s : GlobalVars.validMobs)
-			p.sendMessage(s);
 		if (GlobalVars.validMobs.contains(entity.getType().getName()))
 			stats.changeKill(p, entity);
 	}

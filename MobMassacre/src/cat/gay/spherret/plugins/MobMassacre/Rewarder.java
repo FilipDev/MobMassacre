@@ -6,7 +6,6 @@ public class Rewarder {
 
 	Start start = new Start();
 	GlobalVars gbvs = new GlobalVars();
-	Stats stats = start.stats;
 
 	public void rewardAll(){
 		for (String s : gbvs.rewards.keySet()){

@@ -5,5 +5,11 @@ author: Spherret.
 description: MobMassacre.
 commands:
   score:
+  restartonnext:
+  restartnow:
+  top:
 permissions:
-  mobmassacre.see.others:
+  mobmassacre.seeothers:
+    default: true
+  mobmassacre.restart:
+    default: op

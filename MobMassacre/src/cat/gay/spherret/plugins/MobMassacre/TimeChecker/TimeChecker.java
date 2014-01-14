@@ -16,6 +16,8 @@ public class TimeChecker implements Runnable {
 	Long curTime;
 	Long difference;
 
+	public boolean restart;
+
 	public boolean trySync(){
 		try{
 			curTime = System.currentTimeMillis();
@@ -27,7 +29,7 @@ public class TimeChecker implements Runnable {
 				isSynced = false;
 				return false;
 			}
-			Bukkit.getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "Syncing time. " + time);
+			Bukkit.getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "Syncing time. (" + time + ")");
 			isSynced = true;
 			return true;
 		}catch (Exception e){
@@ -47,24 +49,35 @@ public class TimeChecker implements Runnable {
 
 		curTime = System.currentTimeMillis();
 
+		if (restart)
+			isSynced = false;
+
 		if (isSynced){
 			statis.set("TIME", curTime);
-			System.out.println(curTime - GlobalVars.statis.getLong("24HRSTART") - time);
 			if (curTime - GlobalVars.statis.getLong("24HRSTART") > time){
-				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "New 24 hour period started, setting time to now. SYNCED");
+				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[MM] New 24 hour period started.");
 				statis.set("24HRSTART", curTime);
 				rewarder.rewardAll();
 			}
 		}
 		else{
 			statis.set("TIME", curTime);
-			if (statis.getLong("TIME") - 86400000 >= GlobalVars.statis.getLong("24HRSTART")){
-				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "New 24 hour period started, setting time to now. NOT SYNCED");
+			if (curTime - GlobalVars.statis.getLong("24HRSTART") > 86400000 || restart){
+				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[MM] New 24 hour period started.");
 				statis.set("24HRSTART", curTime);
 				rewarder.rewardAll();
 			}
 		}
-
 		start.saveStats();
+	}
+	public void restartNow(){
+
+		YamlConfiguration statis = GlobalVars.statis;
+		curTime = System.currentTimeMillis();
+
+		statis.set("TIME", curTime);
+		Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[MM] RESTARTED LOOP: New 24 hour period started.");
+		statis.set("24HRSTART", curTime);
+		rewarder.rewardAll();
 	}
 }

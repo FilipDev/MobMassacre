@@ -24,10 +24,10 @@ public class Start extends JavaPlugin {
 
 	public static NewYAML newYAML;
 
+	TimeChecker timeChecker;
 
 	public void onEnable(){
 		newYAML = new NewYAML(new File(this.getDataFolder().getPath() + File.separator + "data.yml"));
-		System.out.println(newYAML.getFile());
 		GlobalVars.statis = newYAML.newYaml();
 		this.getServer().getPluginManager().registerEvents(new Events(), this);
 		Set<String> rewards = GlobalVars.statis.createSection("Kills").getKeys(false);
@@ -35,7 +35,7 @@ public class Start extends JavaPlugin {
 			gbvs.rewards.put(player, GlobalVars.statis.getInt("Kills." + player));
 		}
 		this.saveDefaultConfig();
-		TimeChecker timeChecker = new TimeChecker(this);
+		timeChecker = new TimeChecker(this);
 		timeChecker.trySync();
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, timeChecker, 0, 3600);
 		String[] validMobs = {"Chicken", "Zombie"};
@@ -50,7 +50,7 @@ public class Start extends JavaPlugin {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (!(sender instanceof Player)){
 			Player p = ((Player) sender);
-			if (command.getName().equals("score")){
+			if (command.getName().equalsIgnoreCase("score")){
 				if (args.length < 1)
 					p.sendMessage(stats.getKills(p) + "");
 				if (args.length == 1 && p.hasPermission("mobmassacre.seeothers"))
@@ -60,8 +60,19 @@ public class Start extends JavaPlugin {
 						p.sendMessage(ChatColor.RED + "Second parameter must be a player.");
 					}
 			}
-			if (command.getName().equals("top")){
+			if (command.getName().equalsIgnoreCase("top")){
 
+			}
+			if (command.getName().equalsIgnoreCase("restartonnext") && p.hasPermission("mobmassacre.restart")){
+				timeChecker.restart = true;
+				p.sendMessage(ChatColor.GREEN + "Will restart on next loop.");
+				return true;
+			}
+			if (command.getName().equalsIgnoreCase("restartnow") && p.hasPermission("mobmassacre.restart")){
+				p.sendMessage(ChatColor.GRAY + "Restarting...");
+				timeChecker.restartNow();
+				p.sendMessage(ChatColor.GREEN + "Restarted.");
+				return true;
 			}
 		}
 
@@ -69,7 +80,6 @@ public class Start extends JavaPlugin {
 	}
 
 	public void saveStats(){
-		System.out.println(newYAML.getFile());
 		try{
 			gbvs.statis.save(newYAML.getFile());
 		}catch (IOException e){
