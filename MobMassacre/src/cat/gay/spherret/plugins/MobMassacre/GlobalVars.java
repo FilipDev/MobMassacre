@@ -5,14 +5,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 public class GlobalVars {
 
 	public static YamlConfiguration statis;
-
-	public HashMap<String, Integer> rewards = new HashMap<String, Integer>();
+	public static HashMap<String, Integer> rewards = new HashMap<String, Integer>();
 	public boolean isActive = false;
-	public static List<String> validMobs = new ArrayList<String>();
-	public List<String> topPlayers = new ArrayList<String>();
+	public static List validMobs = new ArrayList<String>();
+	public static TreeMap<String, Integer> kills = new TreeMap<String, Integer>();
 
 }

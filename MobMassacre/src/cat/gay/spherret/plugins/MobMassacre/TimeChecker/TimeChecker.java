@@ -16,7 +16,7 @@ public class TimeChecker implements Runnable {
 	Long curTime;
 	Long difference;
 
-	public boolean restart;
+	public boolean restart = false;
 
 	public boolean trySync(){
 		try{

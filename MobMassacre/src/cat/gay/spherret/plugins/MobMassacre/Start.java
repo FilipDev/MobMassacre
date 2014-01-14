@@ -5,22 +5,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Start extends JavaPlugin {
-
-	public GlobalVars gbvs = new GlobalVars();
-
-	public Stats stats;
 
 	public static NewYAML newYAML;
 
@@ -30,9 +22,9 @@ public class Start extends JavaPlugin {
 		newYAML = new NewYAML(new File(this.getDataFolder().getPath() + File.separator + "data.yml"));
 		GlobalVars.statis = newYAML.newYaml();
 		this.getServer().getPluginManager().registerEvents(new Events(), this);
-		Set<String> rewards = GlobalVars.statis.createSection("Kills").getKeys(false);
+		Set<String> rewards = GlobalVars.statis.getConfigurationSection("Kills.").getKeys(false);
 		for (String player : rewards){
-			gbvs.rewards.put(player, GlobalVars.statis.getInt("Kills." + player));
+			GlobalVars.rewards.put(player, GlobalVars.statis.getInt("Kills." + player + ".kills"));
 		}
 		this.saveDefaultConfig();
 		timeChecker = new TimeChecker(this);
@@ -40,6 +32,7 @@ public class Start extends JavaPlugin {
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, timeChecker, 0, 3600);
 		String[] validMobs = {"Chicken", "Zombie"};
 		GlobalVars.validMobs = Arrays.asList(validMobs);
+		arrangeArray();
 	}
 
 	public void onDisable(){
@@ -48,20 +41,22 @@ public class Start extends JavaPlugin {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (!(sender instanceof Player)){
+		if ((sender instanceof Player)){
 			Player p = ((Player) sender);
 			if (command.getName().equalsIgnoreCase("score")){
-				if (args.length < 1)
-					p.sendMessage(stats.getKills(p) + "");
+				if (args.length < 1){
+					p.sendMessage("" + Stats.getKills(p.getName()));
+				}
 				if (args.length == 1 && p.hasPermission("mobmassacre.seeothers"))
 					try{
-						p.sendMessage(stats.getKills(Bukkit.getPlayer(args[0])) + "");
+						p.sendMessage(Stats.getKills(Bukkit.getPlayer(args[0])) + "");
 					}catch (Exception e){
 						p.sendMessage(ChatColor.RED + "Second parameter must be a player.");
 					}
 			}
 			if (command.getName().equalsIgnoreCase("top")){
-
+				p.sendMessage(ChatColor.GREEN + "Arranging List...");
+				arrangeArray(p);
 			}
 			if (command.getName().equalsIgnoreCase("restartonnext") && p.hasPermission("mobmassacre.restart")){
 				timeChecker.restart = true;
@@ -79,11 +74,63 @@ public class Start extends JavaPlugin {
 		return true;
 	}
 
-	public void saveStats(){
+	public static void saveStats(){
 		try{
-			gbvs.statis.save(newYAML.getFile());
+			GlobalVars.statis.save(newYAML.getFile());
 		}catch (IOException e){
 			e.printStackTrace();
 		}
 	}
+	public void arrangeArray(final Player p){
+		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+			@Override
+			public void run() {
+				ValueComparator comp = new ValueComparator(GlobalVars.rewards);
+				TreeMap<String, Integer> sorted_map = new TreeMap<String, Integer>(comp);
+				sorted_map.putAll(GlobalVars.rewards);
+				GlobalVars.kills = sorted_map;
+				Set players = sorted_map.keySet();
+				Collection kills = sorted_map.values();
+				tellTop(p, players, kills);
+			}
+		});
+	}
+
+	public void arrangeArray(){
+		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+			@Override
+			public void run() {
+				ValueComparator comp = new ValueComparator(GlobalVars.rewards);
+				TreeMap<String, Integer> sorted_map = new TreeMap<String, Integer>(comp);
+				sorted_map.putAll(GlobalVars.rewards);
+				GlobalVars.kills = sorted_map;
+			}
+		});
+	}
+
+	public void tellTop(Player p, Set set, Collection kills){
+		Object[] names = set.toArray();
+		Object[] kills1 = kills.toArray();
+		p.sendMessage(ChatColor.DARK_GRAY + "---TOP 3 SCORES---");
+		try{
+			p.sendMessage(ChatColor.RED + "1. " + ChatColor.GRAY + names[0] + " - " + ChatColor.GOLD + kills1[0]);
+			p.sendMessage(ChatColor.RED + "2. " + ChatColor.GRAY + names[1] + " - " + ChatColor.GOLD + kills1[1]);
+			p.sendMessage(ChatColor.RED + "3. " + ChatColor.GRAY + names[2] + " - " + ChatColor.GOLD + kills1[2]);
+		}catch (ArrayIndexOutOfBoundsException e){}
+	}
+	class ValueComparator implements Comparator<String> {
+
+		Map<String, Integer> base;
+		public ValueComparator(Map<String, Integer> base){
+			this.base = base;
+		}
+
+		// Note: this comparator imposes orderings that are inconsistent with equals.
+		public int compare(String a, String b){
+			if(base.get(a) >= base.get(b)){
+				return -1;
+			}else{
+				return 1;
+			}// returning 0 would merge keys
+		}}
 }

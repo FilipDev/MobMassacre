@@ -8,37 +8,60 @@ import java.io.IOException;
 
 public class Stats{
 
-	Start s = new Start();
-
 	int changes;
 
 	public void changeKill(Player player, Entity killedEntity){
-		if (GlobalVars.validMobs.contains(killedEntity.getType().getName())){
-			try{
-				GlobalVars.statis.set("Kills." + player.getName() + ".kills", 1 + GlobalVars.statis.getInt("Kills." + player.getName() + ".kills"));
-				System.out.println(GlobalVars.statis.getInt("Kills." + player.getName() + ".kills") + " " + "Kills." + player.getName() + ".kills");
-			}catch (Exception e){
-				GlobalVars.statis.set("Kills." + player.getName() + ".kills", 1);
+		if (player instanceof Player){
+			if (GlobalVars.validMobs.contains(killedEntity.getType().getName())){
+				try{
+					GlobalVars.statis.set("Kills." + player.getName() + ".kills", 1 + GlobalVars.statis.getInt("Kills." + player.getName() + ".kills"));
+					System.out.println(GlobalVars.statis.getInt("Kills." + player.getName() + ".kills") + " " + "Kills." + player.getName() + ".kills");
+				}catch (Exception e){
+					GlobalVars.statis.set("Kills." + player.getName() + ".kills", 1);
+				}
+				changes++;
+				if (changes > 1){
+					Start.saveStats();
+					changes = 0;
+				}
 			}
-			changes++;
-			if (changes > 4)
-				s.saveStats();
 		}
 	}
 
-	public int getKills(Player p){
+	public static int getKills(Player p){
 		try{
 			return GlobalVars.statis.getInt("Kills." + p.getName() + ".kills");
 		}catch (Exception e){
+			e.printStackTrace();
 			return 0;
 		}
 	}
-	public int getKills(String p){
+	public static int getKills(String p){
 		try{
+			System.out.println(GlobalVars.statis.getInt("Kills." + p + ".kills") + "swag");
 			return GlobalVars.statis.getInt("Kills." + p + ".kills");
 		}catch (Exception e){
 			return 0;
 		}
+	}
+	public void setKills(Player p, Integer i){
+		GlobalVars.statis.set("Kills." + p.getName() + ".kills", i);
+	}
+	public void setKills(String s, Integer i){
+		GlobalVars.statis.set("Kills." + s + ".kills", i);
+
+	}
+	public void addKills(Player p, Integer i){
+		GlobalVars.statis.set("Kills." + p.getName() + ".kills", GlobalVars.statis.getInt("Kills." + p.getName() + ".kills") + i);
+	}
+	public void addKills(String s, Integer i){
+		GlobalVars.statis.set("Kills." + s + ".kills", GlobalVars.statis.getInt("Kills." + s + ".kills") + i);
+	}
+	public void subtractKills(Player p, Integer i){
+		GlobalVars.statis.set("Kills." + p.getName() + ".kills", GlobalVars.statis.getInt("Kills." + p.getName() + ".kills") - i);
+	}
+	public void subtractKills(String s, Integer i){
+		GlobalVars.statis.set("Kills." + s + ".kills", GlobalVars.statis.getInt("Kills." + s + ".kills") - i);
 	}
 
 }

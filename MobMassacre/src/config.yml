@@ -1,4 +1,13 @@
 #@p and @r are variables.
-#@p = The Player
-#@r = The Reward Amount
-Reward: '/eco give @p @r'
+#@p = The Player.
+#@r = The Reward Amount.
+reward: 'say @p got @r'
+#Message to tell player when they recieve their reward.
+#@p = The Player.
+#@r = The Reward Amount.
+#@if_on_charts()
+#@pl = Place On Chart.
+#@rpl = Reward For That Place.
+message: 'You recieved @r! @if_on_charts(You recieved an extra @rpl for your #@pl place on the top 3 list!)'
+#Reward per mob.
+rate: 0.10
