@@ -1,6 +1,5 @@
 package cat.gay.spherret.plugins.MobMassacre;
 
-import com.sun.swing.internal.plaf.metal.resources.metal;
 import org.bukkit.Bukkit;
 
 import java.util.*;
@@ -15,16 +14,18 @@ public class Rewarder {
 
 	public void rewardAll(){
 		Set players = GlobalVars.kills.keySet();
-		Collection kills = GlobalVars.kills.values();
 		Object[] names = players.toArray();
-		Object[] kills1 = kills.toArray();
+
+		for (Object a : names){
+			System.out.println(a);
+		}
 
 		List<String> rewardedextra = new ArrayList<String>();
 
 		try{
-			GlobalVars.rewards.put(names[0].toString(), GlobalVars.rewards.get(names[0]) + start.getConfig().getInt("placerewards.1"));
-			GlobalVars.rewards.put(names[1].toString(), GlobalVars.rewards.get(names[1]) + start.getConfig().getInt("placerewards.2"));
-			GlobalVars.rewards.put(names[2].toString(), GlobalVars.rewards.get(names[2]) + start.getConfig().getInt("placerewards.3"));
+			GlobalVars.extrapts.put(names[0].toString(), start.getConfig().getInt("placerewards.1"));
+			GlobalVars.extrapts.put(names[1].toString(), start.getConfig().getInt("placerewards.2"));
+			GlobalVars.extrapts.put(names[2].toString(), start.getConfig().getInt("placerewards.3"));
 			rewardedextra.add(names[0].toString());
 			rewardedextra.add(names[1].toString());
 			rewardedextra.add(names[2].toString());
@@ -33,7 +34,10 @@ public class Rewarder {
 		for (String s : GlobalVars.rewards.keySet()){
 			int reward = GlobalVars.rewards.get(s);
 			String Reward = start.getReward();
-			Reward = Reward.replaceAll("@r", (reward * start.getConfig().getDouble("rate") + ""));
+			if (rewardedextra.contains(s)){
+				Reward = Reward.replaceAll("@r", ((reward * start.getConfig().getDouble("rate")) + GlobalVars.extrapts.get(s) + ""));
+			}else
+				Reward = Reward.replaceAll("@r", (reward * start.getConfig().getDouble("rate") + ""));
 			Reward = Reward.replaceAll("@p", s);
 			String message;
 			if (rewardedextra.contains(s)){
@@ -51,5 +55,7 @@ public class Rewarder {
 		}
 		GlobalVars.rewards.clear();
 		GlobalVars.statis.set("Kills", null);
+		GlobalVars.extrapts.clear();
+		GlobalVars.kills.clear();
 	}
 }

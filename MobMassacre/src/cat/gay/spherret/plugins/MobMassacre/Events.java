@@ -31,7 +31,7 @@ public class Events implements Listener{
 	}
 
 	//Perm code test
-	@EventHandler (priority = EventPriority.MONITOR)
+	@EventHandler (priority = EventPriority.HIGHEST)
 	public void r(AsyncPlayerChatEvent e) throws IllegalAccessException, InvocationTargetException{
 		if (e.getMessage().startsWith(";dont")){
 			e.setCancelled(true);

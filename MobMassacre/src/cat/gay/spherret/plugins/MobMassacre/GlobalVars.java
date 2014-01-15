@@ -11,8 +11,8 @@ public class GlobalVars {
 
 	public static YamlConfiguration statis;
 	public static HashMap<String, Integer> rewards = new HashMap<String, Integer>();
-	public boolean isActive = false;
 	public static List validMobs = new ArrayList<String>();
 	public static TreeMap<String, Integer> kills = new TreeMap<String, Integer>();
+	public static HashMap<String, Integer> extrapts = new HashMap<String, Integer>();
 
 }

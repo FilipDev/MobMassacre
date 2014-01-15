@@ -15,12 +15,13 @@ public class Stats{
 			if (GlobalVars.validMobs.contains(killedEntity.getType().getName())){
 				try{
 					GlobalVars.statis.set("Kills." + player.getName() + ".kills", 1 + GlobalVars.statis.getInt("Kills." + player.getName() + ".kills"));
-					System.out.println(GlobalVars.statis.getInt("Kills." + player.getName() + ".kills") + " " + "Kills." + player.getName() + ".kills");
+					GlobalVars.rewards.put(player.getName(), 1 + GlobalVars.statis.getInt("Kills." + player.getName() + ".kills"));
 				}catch (Exception e){
 					GlobalVars.statis.set("Kills." + player.getName() + ".kills", 1);
+					GlobalVars.rewards.put(player.getName(), 1);
 				}
 				changes++;
-				if (changes > 1){
+				if (changes > 3){
 					Start.saveStats();
 					changes = 0;
 				}
@@ -38,7 +39,6 @@ public class Stats{
 	}
 	public static int getKills(String p){
 		try{
-			System.out.println(GlobalVars.statis.getInt("Kills." + p + ".kills") + "swag");
 			return GlobalVars.statis.getInt("Kills." + p + ".kills");
 		}catch (Exception e){
 			return 0;

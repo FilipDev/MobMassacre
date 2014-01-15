@@ -25,7 +25,6 @@ public class Start extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new Events(), this);
 		try{
 			Set<String> rewards = GlobalVars.statis.getConfigurationSection("Kills.").getKeys(false);
-
 			for (String player : rewards){
 				GlobalVars.rewards.put(player, GlobalVars.statis.getInt("Kills." + player + ".kills"));
 			}
@@ -92,15 +91,20 @@ public class Start extends JavaPlugin {
 		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
 			@Override
 			public void run() {
-				ValueComparator comp = new ValueComparator(GlobalVars.rewards);
-				TreeMap<String, Integer> sorted_map = new TreeMap<String, Integer>(comp);
-				sorted_map.putAll(GlobalVars.rewards);
-				GlobalVars.kills = sorted_map;
-				Set players = sorted_map.keySet();
-				Collection kills = sorted_map.values();
-				tellTop(p, players, kills);
+				SortedSet<Map.Entry<String, Integer>> entryset = entriesSortedByValues(GlobalVars.rewards);
+				tellPlayer(p, entryset);
 			}
 		});
+	}
+
+	public void tellPlayer(Player p, SortedSet<Map.Entry<String, Integer>> entries){
+		Map.Entry<String, Integer>[] entryarray = entries.toArray(new Map.Entry[3]);
+		p.sendMessage(ChatColor.DARK_GRAY + "---TOP 3 SCORES---");
+		try{
+			p.sendMessage(ChatColor.RED + "1. " + ChatColor.GOLD + entryarray[0].getKey() + " - " + ChatColor.RED + entryarray[0].getValue());
+			p.sendMessage(ChatColor.RED + "2. " + ChatColor.GOLD + entryarray[1].getKey() + " - " + ChatColor.RED + entryarray[1].getValue());
+			p.sendMessage(ChatColor.RED + "3. " + ChatColor.GOLD + entryarray[2].getKey() + " - " + ChatColor.RED + entryarray[2].getValue());
+		}catch (ArrayIndexOutOfBoundsException e){}
 	}
 
 	public void arrangeArray(){
@@ -109,8 +113,14 @@ public class Start extends JavaPlugin {
 			public void run() {
 				ValueComparator comp = new ValueComparator(GlobalVars.rewards);
 				TreeMap<String, Integer> sorted_map = new TreeMap<String, Integer>(comp);
+				Collection c = sorted_map.values();
+				Collection d = new ArrayList();
+				for (Object o : c){
+					d.add(((Integer) o - 1));
+				}
+				sorted_map = new TreeMap<String, Integer>(changeMapValues(sorted_map, Arrays.asList(d.toArray())));
 				sorted_map.putAll(GlobalVars.rewards);
-				GlobalVars.kills = sorted_map;
+				GlobalVars.kills.putAll(sorted_map);
 			}
 		});
 	}
@@ -120,14 +130,15 @@ public class Start extends JavaPlugin {
 		Object[] kills1 = kills.toArray();
 		p.sendMessage(ChatColor.DARK_GRAY + "---TOP 3 SCORES---");
 		try{
-			p.sendMessage(ChatColor.RED + "1. " + ChatColor.GOLD + names[0] + " - " + ChatColor.RED + kills1[0]);
-			p.sendMessage(ChatColor.RED + "2. " + ChatColor.GOLD + names[1] + " - " + ChatColor.RED + kills1[1]);
-			p.sendMessage(ChatColor.RED + "3. " + ChatColor.GOLD + names[2] + " - " + ChatColor.RED + kills1[2]);
+			p.sendMessage(ChatColor.RED + "1. " + ChatColor.GOLD + names[0] + " - " + ChatColor.RED + ((kills1[0])));
+			p.sendMessage(ChatColor.RED + "2. " + ChatColor.GOLD + names[1] + " - " + ChatColor.RED + ((kills1[1])));
+			p.sendMessage(ChatColor.RED + "3. " + ChatColor.GOLD + names[2] + " - " + ChatColor.RED + ((kills1[2])));
 		}catch (ArrayIndexOutOfBoundsException e){}
 	}
 	class ValueComparator implements Comparator<String> {
 
 		Map<String, Integer> base;
+
 		public ValueComparator(Map<String, Integer> base){
 			this.base = base;
 		}
@@ -140,6 +151,28 @@ public class Start extends JavaPlugin {
 				return 1;
 			}// returning 0 would merge keys
 		}
+	}
+	public Map changeMapValues(Map map, List<Object> lo){
+		Map new_map = new HashMap();
+		Integer x = 0;
+		for (Object o : map.keySet()){
+			new_map.put(o, lo.get(x));
+			x++;
+		}
+		map.clear();
+		return new_map;
+	}
+	static <K,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
+		SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
+				new Comparator<Map.Entry<K,V>>() {
+					@Override public int compare(Map.Entry<K,V> e1, Map.Entry<K,V> e2) {
+						int res = e2.getValue().compareTo(e1.getValue());
+						return res != 0 ? res : 1; // Special fix to preserve items with equal values
+					}
+				}
+		);
+		sortedEntries.addAll(map.entrySet());
+		return sortedEntries;
 	}
 	public Start(){}
 }

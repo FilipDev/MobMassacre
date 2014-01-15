@@ -9,7 +9,7 @@ message: 'You won @r for killing @mk valid mobs!'
 #@pl = Place On Chart.
 chartmessage: 'You won @r and an additional @rpl for being number @pl on the top 3 players!'
 #Reward per mob.
-rate: 0.10
+rate: 0.1
 #Valid Mobs (Mobs that count for your reward when killed)
 mobs:
   - Zombie
