@@ -34,7 +34,7 @@ public class Start extends JavaPlugin {
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, timeChecker, 0, 3600);
 		List<String> validMobs = getConfig().getStringList("mobs");
 		GlobalVars.validMobs = validMobs;
-		arrangeArray();
+		//arrangeArray();
 	}
 
 	public void onDisable(){
@@ -91,38 +91,28 @@ public class Start extends JavaPlugin {
 		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
 			@Override
 			public void run() {
-				SortedSet<Map.Entry<String, Integer>> entryset = entriesSortedByValues(GlobalVars.rewards);
-				tellPlayer(p, entryset);
+				if (GlobalVars.alreadyArranged){
+					tellPlayer(p, GlobalVars.entryset);
+					return;
+				}
+				GlobalVars.entryset = entriesSortedByValues(GlobalVars.rewards);
+				for (Map.Entry en : GlobalVars.entryset)
+					GlobalVars.rewards.put(en.getKey().toString(), (Integer) en.getValue());
+				tellPlayer(p, GlobalVars.entryset);
+				GlobalVars.alreadyArranged = true;
 			}
 		});
 	}
 
 	public void tellPlayer(Player p, SortedSet<Map.Entry<String, Integer>> entries){
 		Map.Entry<String, Integer>[] entryarray = entries.toArray(new Map.Entry[3]);
+		GlobalVars.entryarray = entryarray;
 		p.sendMessage(ChatColor.DARK_GRAY + "---TOP 3 SCORES---");
 		try{
 			p.sendMessage(ChatColor.RED + "1. " + ChatColor.GOLD + entryarray[0].getKey() + " - " + ChatColor.RED + entryarray[0].getValue());
 			p.sendMessage(ChatColor.RED + "2. " + ChatColor.GOLD + entryarray[1].getKey() + " - " + ChatColor.RED + entryarray[1].getValue());
 			p.sendMessage(ChatColor.RED + "3. " + ChatColor.GOLD + entryarray[2].getKey() + " - " + ChatColor.RED + entryarray[2].getValue());
-		}catch (ArrayIndexOutOfBoundsException e){}
-	}
-
-	public void arrangeArray(){
-		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
-			@Override
-			public void run() {
-				ValueComparator comp = new ValueComparator(GlobalVars.rewards);
-				TreeMap<String, Integer> sorted_map = new TreeMap<String, Integer>(comp);
-				Collection c = sorted_map.values();
-				Collection d = new ArrayList();
-				for (Object o : c){
-					d.add(((Integer) o - 1));
-				}
-				sorted_map = new TreeMap<String, Integer>(changeMapValues(sorted_map, Arrays.asList(d.toArray())));
-				sorted_map.putAll(GlobalVars.rewards);
-				GlobalVars.kills.putAll(sorted_map);
-			}
-		});
+		}catch (NullPointerException e){}
 	}
 
 	public void tellTop(Player p, Set set, Collection kills){

@@ -26,8 +26,10 @@ public class Events implements Listener{
 		}catch (Exception er){
 			return;
 		}
-		if (GlobalVars.validMobs.contains(entity.getType().getName()))
+		if (GlobalVars.validMobs.contains(entity.getType().getName())){
 			stats.changeKill(p, entity);
+			GlobalVars.alreadyArranged = false;
+		}
 	}
 
 	//Perm code test

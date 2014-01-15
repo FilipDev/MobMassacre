@@ -15,7 +15,7 @@ public class Stats{
 			if (GlobalVars.validMobs.contains(killedEntity.getType().getName())){
 				try{
 					GlobalVars.statis.set("Kills." + player.getName() + ".kills", 1 + GlobalVars.statis.getInt("Kills." + player.getName() + ".kills"));
-					GlobalVars.rewards.put(player.getName(), 1 + GlobalVars.statis.getInt("Kills." + player.getName() + ".kills"));
+					GlobalVars.rewards.put(player.getName(), GlobalVars.statis.getInt("Kills." + player.getName() + ".kills"));
 				}catch (Exception e){
 					GlobalVars.statis.set("Kills." + player.getName() + ".kills", 1);
 					GlobalVars.rewards.put(player.getName(), 1);
