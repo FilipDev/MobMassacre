@@ -1,7 +1,5 @@
 package cat.gay.spherret.plugins.MobMassacre;
 
-import cat.gay.spherret.plugins.MobMassacre.TimeChecker.TimeChecker;
-import me.confuser.barapi.BarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -113,7 +111,7 @@ public class Start extends JavaPlugin {
 
 	public boolean setUpBar(){
 		boolean isEnabled = Bukkit.getPluginManager().isPluginEnabled("BarAPI");
-		if (isEnabled)
+		if (!isEnabled)
 			return false;
 		BarAPI = new me.confuser.barapi.BarAPI();
 		return true;

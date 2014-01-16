@@ -1,4 +1,4 @@
-package cat.gay.spherret.plugins.MobMassacre.TimeChecker;
+package cat.gay.spherret.plugins.MobMassacre;
 
 import cat.gay.spherret.plugins.MobMassacre.GlobalVars;
 import cat.gay.spherret.plugins.MobMassacre.Rewarder;
@@ -8,6 +8,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class TimeChecker implements Runnable {
@@ -73,10 +75,11 @@ public class TimeChecker implements Runnable {
 			}
 		}
 		if (Start.isBarEnabled){
-			long minutes = TimeUnit.MINUTES.toMinutes(86400000 - (curTime - statis.getLong("24HRSTART")));
+			Date now = new Date(86400000 - (curTime - statis.getLong("24HRSTART")));
+			SimpleDateFormat format = new SimpleDateFormat("HH:mm");
 			for (String s : GlobalVars.validWorlds){
 				for (Player p : Bukkit.getWorld(s).getPlayers()){
-					me.confuser.barapi.BarAPI.setMessage(p, ChatColor.RED + "There are " + minutes + " left until all the scores are counted!", 15);
+					me.confuser.barapi.BarAPI.setMessage(p, ChatColor.RED + "There are " + format.format(now) + " minutes left until all the scores are counted!", 15);
 				}
 			}
 		}
