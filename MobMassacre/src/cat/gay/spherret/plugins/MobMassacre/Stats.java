@@ -13,17 +13,19 @@ public class Stats{
 	public void changeKill(Player player, Entity killedEntity){
 		if (player instanceof Player){
 			if (GlobalVars.validMobs.contains(killedEntity.getType().getName())){
-				try{
-					GlobalVars.statis.set("Kills." + player.getName() + ".kills", 1 + GlobalVars.statis.getInt("Kills." + player.getName() + ".kills"));
-					GlobalVars.rewards.put(player.getName(), GlobalVars.statis.getInt("Kills." + player.getName() + ".kills"));
-				}catch (Exception e){
-					GlobalVars.statis.set("Kills." + player.getName() + ".kills", 1);
-					GlobalVars.rewards.put(player.getName(), 1);
-				}
-				changes++;
-				if (changes > 3){
-					Start.saveStats();
-					changes = 0;
+				if (GlobalVars.validWorlds.contains(player.getWorld().getName())){
+					try{
+						GlobalVars.statis.set("Kills." + player.getName() + ".kills", 1 + GlobalVars.statis.getInt("Kills." + player.getName() + ".kills"));
+						GlobalVars.rewards.put(player.getName(), GlobalVars.statis.getInt("Kills." + player.getName() + ".kills"));
+					}catch (Exception e){
+						GlobalVars.statis.set("Kills." + player.getName() + ".kills", 1);
+						GlobalVars.rewards.put(player.getName(), 1);
+					}
+					changes++;
+					if (changes > 3){
+						Start.saveStats();
+						changes = 0;
+					}
 				}
 			}
 		}

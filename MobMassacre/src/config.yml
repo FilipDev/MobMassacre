@@ -13,6 +13,14 @@ mobs:
   - Chicken
   - Creeper
 placerewards:
-  1: 80
-  2: 50
-  3: 20
+  mobmassacre.extra:
+    1: 80
+    2: 50
+    3: 20
+  anotherpermission.node:
+    1: 10
+    2: 20
+    3: 30
+activeworlds:
+  - world
+  - world_nether

@@ -1,9 +1,9 @@
 package cat.gay.spherret.plugins.MobMassacre;
 
 import org.bukkit.Bukkit;
-
-import javax.xml.bind.annotation.XmlElementDecl;
 import java.util.*;
+import cat.gay.spherret.plugins.MobMassacre.Vault;
+import org.bukkit.World;
 
 public class Rewarder {
 
@@ -18,14 +18,18 @@ public class Rewarder {
 		HashMap<String, Integer> extrapts = new HashMap<String, Integer>();
 
 		try{
-			extrapts.put(GlobalVars.entryarray[0].getKey(), start.getConfig().getInt("placerewards.1"));
-			extrapts.put(GlobalVars.entryarray[1].getKey(), start.getConfig().getInt("placerewards.2"));
-			extrapts.put(GlobalVars.entryarray[2].getKey(), start.getConfig().getInt("placerewards.3"));
+			for (String perm : start.getConfig().getConfigurationSection("placerewards").getKeys(false)){
+				if (Vault.permission.playerHas(new String(), GlobalVars.entryarray[0].getKey(), perm))
+					extrapts.put(GlobalVars.entryarray[0].getKey(), start.getConfig().getInt("placerewards." + perm + ".1"));
+				if (Vault.permission.playerHas(new String(), GlobalVars.entryarray[1].getKey(), perm))
+					extrapts.put(GlobalVars.entryarray[1].getKey(), start.getConfig().getInt("placerewards." + perm + ".2"));
+				if (Vault.permission.playerHas(new String(), GlobalVars.entryarray[2].getKey(), perm))
+					extrapts.put(GlobalVars.entryarray[2].getKey(), start.getConfig().getInt("placerewards." + perm + ".3"));
+			}
+			extrapts.put(GlobalVars.entryarray[0].getKey(), start.getConfig().getInt("placerewards.mobmassacre.extra.1"));
+			extrapts.put(GlobalVars.entryarray[1].getKey(), start.getConfig().getInt("placerewards.mobmassacre.extra.2"));
+			extrapts.put(GlobalVars.entryarray[2].getKey(), start.getConfig().getInt("placerewards.mobmassacre.extra.3"));
 		}catch (Exception e){}
-
-		for (String s : extrapts.keySet()){
-			System.out.println(s + " " + extrapts.get(s));
-		}
 
 		for (String s : GlobalVars.rewards.keySet()){
 			int reward = GlobalVars.rewards.get(s);

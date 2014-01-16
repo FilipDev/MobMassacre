@@ -12,4 +12,5 @@ public class GlobalVars {
 	public static SortedSet<Map.Entry<String, Integer>> entryset;
 	public static Map.Entry<String, Integer>[] entryarray;
 	public static boolean alreadyArranged;
+	public static List<String> validWorlds = new ArrayList<String>();
 }

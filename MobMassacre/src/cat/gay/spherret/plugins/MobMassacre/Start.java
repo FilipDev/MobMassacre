@@ -19,6 +19,8 @@ public class Start extends JavaPlugin {
 	TimeChecker timeChecker;
 
 	public void onEnable(){
+		GlobalVars.validWorlds = getConfig().getStringList("activeworlds");
+		new cat.gay.spherret.plugins.MobMassacre.Vault().setupPermissions();
 		this.saveDefaultConfig();
 		newYAML = new NewYAML(new File(this.getDataFolder().getPath() + File.separator + "data.yml"));
 		GlobalVars.statis = newYAML.newYaml();
