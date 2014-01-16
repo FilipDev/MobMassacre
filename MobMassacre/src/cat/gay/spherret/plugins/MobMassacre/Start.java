@@ -1,6 +1,7 @@
 package cat.gay.spherret.plugins.MobMassacre;
 
 import cat.gay.spherret.plugins.MobMassacre.TimeChecker.TimeChecker;
+import me.confuser.barapi.BarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -16,11 +17,16 @@ public class Start extends JavaPlugin {
 
 	public static NewYAML newYAML;
 
+	public static Object BarAPI;
+
+	public static boolean isBarEnabled;
+
 	TimeChecker timeChecker;
 
 	public void onEnable(){
 		GlobalVars.validWorlds = getConfig().getStringList("activeworlds");
 		new cat.gay.spherret.plugins.MobMassacre.Vault().setupPermissions();
+		isBarEnabled = setUpBar();
 		this.saveDefaultConfig();
 		newYAML = new NewYAML(new File(this.getDataFolder().getPath() + File.separator + "data.yml"));
 		GlobalVars.statis = newYAML.newYaml();
@@ -36,7 +42,6 @@ public class Start extends JavaPlugin {
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, timeChecker, 0, 3600);
 		List<String> validMobs = getConfig().getStringList("mobs");
 		GlobalVars.validMobs = validMobs;
-		//arrangeArray();
 	}
 
 	public void onDisable(){
@@ -104,6 +109,14 @@ public class Start extends JavaPlugin {
 				GlobalVars.alreadyArranged = true;
 			}
 		});
+	}
+
+	public boolean setUpBar(){
+		boolean isEnabled = Bukkit.getPluginManager().isPluginEnabled("BarAPI");
+		if (isEnabled)
+			return false;
+		BarAPI = new me.confuser.barapi.BarAPI();
+		return true;
 	}
 
 	public void tellPlayer(Player p, SortedSet<Map.Entry<String, Integer>> entries){

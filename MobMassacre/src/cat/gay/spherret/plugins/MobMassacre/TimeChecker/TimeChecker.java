@@ -6,6 +6,9 @@ import cat.gay.spherret.plugins.MobMassacre.Start;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+
+import java.util.concurrent.TimeUnit;
 
 public class TimeChecker implements Runnable {
 
@@ -67,6 +70,14 @@ public class TimeChecker implements Runnable {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[MM] New 24 hour period started.");
 				statis.set("24HRSTART", curTime);
 				rewarder.rewardAll();
+			}
+		}
+		if (Start.isBarEnabled){
+			long minutes = TimeUnit.MINUTES.toMinutes(86400000 - (curTime - statis.getLong("24HRSTART")));
+			for (String s : GlobalVars.validWorlds){
+				for (Player p : Bukkit.getWorld(s).getPlayers()){
+					me.confuser.barapi.BarAPI.setMessage(p, ChatColor.RED + "There are " + minutes + " left until all the scores are counted!", 15);
+				}
 			}
 		}
 		start.saveStats();

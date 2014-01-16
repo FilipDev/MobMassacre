@@ -13,3 +13,5 @@ permissions:
     default: true
   mobmassacre.restart:
     default: op
+depend: [Vault]
+softdepend: [BarAPI]
