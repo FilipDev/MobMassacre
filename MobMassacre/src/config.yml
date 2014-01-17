@@ -1,6 +1,7 @@
 #@p and @r are variables.
 #@p = The Player.
 #@r = The Reward Amount.
+usevault: true
 reward: 'say @p got @r'
 #Message to tell player when they recieve their reward.
 #@mk = Mob Kills.

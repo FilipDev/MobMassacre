@@ -13,4 +13,5 @@ public class GlobalVars {
 	public static Map.Entry<String, Integer>[] entryarray;
 	public static boolean alreadyArranged;
 	public static List<String> validWorlds = new ArrayList<String>();
+	public static boolean vaultEcon;
 }

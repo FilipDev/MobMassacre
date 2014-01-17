@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Start extends JavaPlugin {
 
@@ -19,11 +20,16 @@ public class Start extends JavaPlugin {
 
 	public static boolean isBarEnabled;
 
+	Vault myvault = new Vault();
+
+	private static final Logger log = Logger.getLogger("Minecraft");
+
 	TimeChecker timeChecker;
 
 	public void onEnable(){
 		GlobalVars.validWorlds = getConfig().getStringList("activeworlds");
-		new cat.gay.spherret.plugins.MobMassacre.Vault().setupPermissions();
+		myvault.setupPermissions();
+		GlobalVars.vaultEcon = !myvault.setupEconomy() ? false : true;
 		isBarEnabled = setUpBar();
 		this.saveDefaultConfig();
 		newYAML = new NewYAML(new File(this.getDataFolder().getPath() + File.separator + "data.yml"));
@@ -118,6 +124,8 @@ public class Start extends JavaPlugin {
 				for (Map.Entry en : GlobalVars.entryset)
 					GlobalVars.rewards.put(en.getKey().toString(), (Integer) en.getValue());
 				GlobalVars.alreadyArranged = true;
+				Map.Entry<String, Integer>[] entryarray = GlobalVars.entryset.toArray(new Map.Entry[3]);
+				GlobalVars.entryarray = entryarray;
 			}
 		});
 	}
@@ -141,33 +149,6 @@ public class Start extends JavaPlugin {
 		}catch (NullPointerException e){}
 	}
 
-	public void tellTop(Player p, Set set, Collection kills){
-		Object[] names = set.toArray();
-		Object[] kills1 = kills.toArray();
-		p.sendMessage(ChatColor.DARK_GRAY + "---TOP 3 SCORES---");
-		try{
-			p.sendMessage(ChatColor.RED + "1. " + ChatColor.GOLD + names[0] + " - " + ChatColor.RED + ((kills1[0])));
-			p.sendMessage(ChatColor.RED + "2. " + ChatColor.GOLD + names[1] + " - " + ChatColor.RED + ((kills1[1])));
-			p.sendMessage(ChatColor.RED + "3. " + ChatColor.GOLD + names[2] + " - " + ChatColor.RED + ((kills1[2])));
-		}catch (ArrayIndexOutOfBoundsException e){}
-	}
-	class ValueComparator implements Comparator<String> {
-
-		Map<String, Integer> base;
-
-		public ValueComparator(Map<String, Integer> base){
-			this.base = base;
-		}
-
-		// Note: this comparator imposes orderings that are inconsistent with equals.
-		public int compare(String a, String b){
-			if(base.get(a) >= base.get(b)){
-				return -1;
-			}else{
-				return 1;
-			}// returning 0 would merge keys
-		}
-	}
 	public Map changeMapValues(Map map, List<Object> lo){
 		Map new_map = new HashMap();
 		Integer x = 0;

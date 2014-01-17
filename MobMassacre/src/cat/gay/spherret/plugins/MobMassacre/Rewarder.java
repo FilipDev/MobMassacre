@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.logging.Level;
+
 import cat.gay.spherret.plugins.MobMassacre.Vault;
 import org.bukkit.World;
 
@@ -40,22 +42,33 @@ public class Rewarder {
 		for (String s : GlobalVars.rewards.keySet()){
 
 			int reward = GlobalVars.rewards.get(s);
-			String Reward = start.getReward();
-			if (extrapts.containsKey(s)){
-				Reward = Reward.replaceAll("@r", (df.format(reward * start.getConfig().getDouble("rate")) + extrapts.get(s)));
-			}else
-				Reward = Reward.replaceAll("@r", df.format(reward * start.getConfig().getDouble("rate")));
-			Reward = Reward.replaceAll("@p", s);
+
+			if (start.getConfig().getBoolean("usevault") && GlobalVars.vaultEcon){
+				try{
+					Vault.economy.depositPlayer(s, Double.parseDouble(df.format(reward * start.getConfig().getDouble("rate")) + extrapts.get(s).doubleValue()));
+				}catch (NullPointerException e) {
+					Vault.economy.createPlayerAccount(s);
+					Vault.economy.depositPlayer(s, Double.parseDouble(df.format(reward * start.getConfig().getDouble("rate")) + extrapts.get(s).doubleValue()));
+				}
+			}else{
+				String Reward = start.getReward();
+				if (extrapts.containsKey(s)){
+					Reward = Reward.replaceAll("@r", (df.format(reward * start.getConfig().getDouble("rate")) + extrapts.get(s).doubleValue()));
+				}else
+					Reward = Reward.replaceAll("@r", df.format(reward * start.getConfig().getDouble("rate")));
+				Reward = Reward.replaceAll("@p", s);
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Reward);
+			}
+
 			String message;
 			message = start.getConfig().getString("message");
 			message = message.replaceAll("@mk", GlobalVars.rewards.get(s) + "");
 			df = new DecimalFormat("0.0");
 			if (extrapts.containsKey(s)){
-				message = message.replaceAll("@r", df.format((reward * start.getConfig().getDouble("rate")) + extrapts.get(s)));
+				message = message.replaceAll("@r", df.format((reward * start.getConfig().getDouble("rate")) + extrapts.get(s).doubleValue()));
 			}else
 				message = message.replaceAll("@r", df.format((reward * start.getConfig().getDouble("rate"))));
 			message = message.replaceAll("@p", s);
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Reward);
 			try{
 				Bukkit.getPlayer(s).sendMessage(message);
 			}catch (NullPointerException e){}
