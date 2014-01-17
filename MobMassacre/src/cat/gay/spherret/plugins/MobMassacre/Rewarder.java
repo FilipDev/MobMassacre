@@ -4,10 +4,6 @@ import org.bukkit.Bukkit;
 
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.logging.Level;
-
-import cat.gay.spherret.plugins.MobMassacre.Vault;
-import org.bukkit.World;
 
 public class Rewarder {
 
@@ -25,19 +21,21 @@ public class Rewarder {
 
 		try{
 			for (String perm : start.getConfig().getConfigurationSection("placerewards").getKeys(false)){
-				if (Vault.permission.playerHas(new String(), GlobalVars.entryarray[0].getKey(), perm))
-					extrapts.put(GlobalVars.entryarray[0].getKey(), start.getConfig().getInt("placerewards." + perm + ".1"));
-				if (Vault.permission.playerHas(new String(), GlobalVars.entryarray[1].getKey(), perm))
-					extrapts.put(GlobalVars.entryarray[1].getKey(), start.getConfig().getInt("placerewards." + perm + ".2"));
-				if (Vault.permission.playerHas(new String(), GlobalVars.entryarray[2].getKey(), perm))
-					extrapts.put(GlobalVars.entryarray[2].getKey(), start.getConfig().getInt("placerewards." + perm + ".3"));
+				try{
+					if (Vault.permission.playerHas(new String(), GlobalVars.entryarray[0].getKey(), perm))
+						extrapts.put(GlobalVars.entryarray[0].getKey(), start.getConfig().getInt("placerewards." + perm + ".1"));
+					if (Vault.permission.playerHas(new String(), GlobalVars.entryarray[1].getKey(), perm))
+						extrapts.put(GlobalVars.entryarray[1].getKey(), start.getConfig().getInt("placerewards." + perm + ".2"));
+					if (Vault.permission.playerHas(new String(), GlobalVars.entryarray[2].getKey(), perm))
+						extrapts.put(GlobalVars.entryarray[2].getKey(), start.getConfig().getInt("placerewards." + perm + ".3"));
+				}catch (NullPointerException e){}
 			}
-			extrapts.put(GlobalVars.entryarray[0].getKey(), start.getConfig().getInt("placerewards.mobmassacre.extra.1"));
-			extrapts.put(GlobalVars.entryarray[1].getKey(), start.getConfig().getInt("placerewards.mobmassacre.extra.2"));
-			extrapts.put(GlobalVars.entryarray[2].getKey(), start.getConfig().getInt("placerewards.mobmassacre.extra.3"));
+			extrapts.put(GlobalVars.entryarray[0].getKey(), start.getConfig().getInt("placerewards.default.1"));
+			extrapts.put(GlobalVars.entryarray[1].getKey(), start.getConfig().getInt("placerewards.default.2"));
+			extrapts.put(GlobalVars.entryarray[2].getKey(), start.getConfig().getInt("placerewards.default.3"));
 		}catch (Exception e){}
 
-		DecimalFormat df = new DecimalFormat("0.00000");
+		DecimalFormat df = new DecimalFormat("0.00");
 
 		for (String s : GlobalVars.rewards.keySet()){
 
@@ -45,15 +43,15 @@ public class Rewarder {
 
 			if (start.getConfig().getBoolean("usevault") && GlobalVars.vaultEcon){
 				try{
-					Vault.economy.depositPlayer(s, Double.parseDouble(df.format(reward * start.getConfig().getDouble("rate")) + extrapts.get(s).doubleValue()));
+					Vault.economy.depositPlayer(s, Double.parseDouble(df.format((reward * start.getConfig().getDouble("rate")) + extrapts.get(s).doubleValue())));
 				}catch (NullPointerException e) {
 					Vault.economy.createPlayerAccount(s);
-					Vault.economy.depositPlayer(s, Double.parseDouble(df.format(reward * start.getConfig().getDouble("rate")) + extrapts.get(s).doubleValue()));
+					Vault.economy.depositPlayer(s, Double.parseDouble(df.format((reward * start.getConfig().getDouble("rate")) + extrapts.get(s).doubleValue())));
 				}
 			}else{
 				String Reward = start.getReward();
 				if (extrapts.containsKey(s)){
-					Reward = Reward.replaceAll("@r", (df.format(reward * start.getConfig().getDouble("rate")) + extrapts.get(s).doubleValue()));
+					Reward = Reward.replaceAll("@r", df.format((reward * start.getConfig().getDouble("rate")) + extrapts.get(s).doubleValue()));
 				}else
 					Reward = Reward.replaceAll("@r", df.format(reward * start.getConfig().getDouble("rate")));
 				Reward = Reward.replaceAll("@p", s);

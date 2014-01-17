@@ -81,7 +81,7 @@ public class TimeChecker implements Runnable {
 			String time = new String(hours + ":" + minutes);
 			for (String s : GlobalVars.validWorlds){
 				for (Player p : Bukkit.getWorld(s).getPlayers()){
-					me.confuser.barapi.BarAPI.setMessage(p, ChatColor.RED + "There is " + time + " left until all the scores are counted!", 15);
+					me.confuser.barapi.BarAPI.setMessage(p, ChatColor.RED + "There are " + hours + "h " + minutes + "m left until all the scores are counted!", 15);
 				}
 			}
 		}

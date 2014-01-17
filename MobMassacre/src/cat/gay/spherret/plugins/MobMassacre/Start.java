@@ -117,17 +117,11 @@ public class Start extends JavaPlugin {
 	}
 
 	public void arrangeArray(){
-		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
-			@Override
-			public void run() {
-				GlobalVars.entryset = entriesSortedByValues(GlobalVars.rewards);
-				for (Map.Entry en : GlobalVars.entryset)
-					GlobalVars.rewards.put(en.getKey().toString(), (Integer) en.getValue());
-				GlobalVars.alreadyArranged = true;
-				Map.Entry<String, Integer>[] entryarray = GlobalVars.entryset.toArray(new Map.Entry[3]);
-				GlobalVars.entryarray = entryarray;
-			}
-		});
+		GlobalVars.entryset = entriesSortedByValues(GlobalVars.rewards);
+		for (Map.Entry en : GlobalVars.entryset)
+			GlobalVars.rewards.put(en.getKey().toString(), (Integer) en.getValue());
+		GlobalVars.alreadyArranged = true;
+		GlobalVars.entryarray = GlobalVars.entryset.toArray(new Map.Entry[3]);
 	}
 
 	public boolean setUpBar(){
