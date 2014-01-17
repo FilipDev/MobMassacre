@@ -92,6 +92,7 @@ public class Start extends JavaPlugin {
 			e.printStackTrace();
 		}
 	}
+
 	public void arrangeArray(final Player p){
 		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
 			@Override
@@ -104,6 +105,18 @@ public class Start extends JavaPlugin {
 				for (Map.Entry en : GlobalVars.entryset)
 					GlobalVars.rewards.put(en.getKey().toString(), (Integer) en.getValue());
 				tellPlayer(p, GlobalVars.entryset);
+				GlobalVars.alreadyArranged = true;
+			}
+		});
+	}
+
+	public void arrangeArray(){
+		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+			@Override
+			public void run() {
+				GlobalVars.entryset = entriesSortedByValues(GlobalVars.rewards);
+				for (Map.Entry en : GlobalVars.entryset)
+					GlobalVars.rewards.put(en.getKey().toString(), (Integer) en.getValue());
 				GlobalVars.alreadyArranged = true;
 			}
 		});

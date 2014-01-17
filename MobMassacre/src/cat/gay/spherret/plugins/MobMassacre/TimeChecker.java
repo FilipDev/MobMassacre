@@ -75,11 +75,13 @@ public class TimeChecker implements Runnable {
 			}
 		}
 		if (Start.isBarEnabled){
-			Date now = new Date(86400000 - (curTime - statis.getLong("24HRSTART")));
-			SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+			long minutes = TimeUnit.MILLISECONDS.toMinutes(86400000 - (curTime - statis.getLong("24HRSTART")));
+			long hours = minutes / 60;
+			minutes = minutes - hours * 60;
+			String time = new String(hours + ":" + minutes);
 			for (String s : GlobalVars.validWorlds){
 				for (Player p : Bukkit.getWorld(s).getPlayers()){
-					me.confuser.barapi.BarAPI.setMessage(p, ChatColor.RED + "There are " + format.format(now) + " minutes left until all the scores are counted!", 15);
+					me.confuser.barapi.BarAPI.setMessage(p, ChatColor.RED + "There is " + time + " left until all the scores are counted!", 15);
 				}
 			}
 		}
