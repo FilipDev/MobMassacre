@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2014. This intellectual property is to be freely distributed and copies are permitted, but NOT claimed as one's own property.
+ * The code of the plugin is NOT to be distributed under any circumstance, and may only be used for educational purposes.
+ */
+
 package cat.gay.spherret.plugins.MobMassacre;
 
 import org.bukkit.Bukkit;

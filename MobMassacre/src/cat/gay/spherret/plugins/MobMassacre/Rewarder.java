@@ -22,17 +22,32 @@ public class Rewarder {
 		try{
 			for (String perm : start.getConfig().getConfigurationSection("placerewards").getKeys(false)){
 				try{
-					if (Vault.permission.playerHas(new String(), GlobalVars.entryarray[0].getKey(), perm))
+					if (Vault.permission.playerHas((String) null, GlobalVars.entryarray[0].getKey(), perm) || Bukkit.getOfflinePlayer(GlobalVars.entryarray[0].getKey()).isOp())
 						extrapts.put(GlobalVars.entryarray[0].getKey(), start.getConfig().getInt("placerewards." + perm + ".1"));
-					if (Vault.permission.playerHas(new String(), GlobalVars.entryarray[1].getKey(), perm))
+					if (Vault.permission.playerHas((String) null, GlobalVars.entryarray[1].getKey(), perm) || Bukkit.getOfflinePlayer(GlobalVars.entryarray[1].getKey()).isOp())
 						extrapts.put(GlobalVars.entryarray[1].getKey(), start.getConfig().getInt("placerewards." + perm + ".2"));
-					if (Vault.permission.playerHas(new String(), GlobalVars.entryarray[2].getKey(), perm))
+					if (Vault.permission.playerHas((String) null, GlobalVars.entryarray[2].getKey(), perm) || Bukkit.getOfflinePlayer(GlobalVars.entryarray[2].getKey()).isOp())
 						extrapts.put(GlobalVars.entryarray[2].getKey(), start.getConfig().getInt("placerewards." + perm + ".3"));
 				}catch (NullPointerException e){}
 			}
-			extrapts.put(GlobalVars.entryarray[0].getKey(), start.getConfig().getInt("placerewards.default.1"));
-			extrapts.put(GlobalVars.entryarray[1].getKey(), start.getConfig().getInt("placerewards.default.2"));
-			extrapts.put(GlobalVars.entryarray[2].getKey(), start.getConfig().getInt("placerewards.default.3"));
+			try{
+				extrapts.put(GlobalVars.entryarray[0].getKey(), extrapts.get(GlobalVars.entryarray[0].getKey()) + start.getConfig().getInt("placerewards.default.1"));
+			}catch (NullPointerException e){
+				extrapts.put(GlobalVars.entryarray[0].getKey(), start.getConfig().getInt("placerewards.default.1"));
+				extrapts.put(GlobalVars.entryarray[1].getKey(), start.getConfig().getInt("placerewards.default.2"));
+				extrapts.put(GlobalVars.entryarray[2].getKey(), start.getConfig().getInt("placerewards.default.3"));
+			}
+			try{
+				extrapts.put(GlobalVars.entryarray[1].getKey(), extrapts.get(GlobalVars.entryarray[1].getKey()) + start.getConfig().getInt("placerewards.default.2"));
+			}catch (NullPointerException e){
+				extrapts.put(GlobalVars.entryarray[1].getKey(), start.getConfig().getInt("placerewards.default.2"));
+				extrapts.put(GlobalVars.entryarray[2].getKey(), start.getConfig().getInt("placerewards.default.3"));
+			}
+			try{
+				extrapts.put(GlobalVars.entryarray[2].getKey(), extrapts.get(GlobalVars.entryarray[2].getKey()) + start.getConfig().getInt("placerewards.default.3"));
+			}catch (NullPointerException e){
+				extrapts.put(GlobalVars.entryarray[2].getKey(), start.getConfig().getInt("placerewards.default.3"));
+			}
 		}catch (Exception e){}
 
 		DecimalFormat df = new DecimalFormat("0.00");
